@@ -152,7 +152,7 @@ function getEmitter() {
          * @returns {Object}
          */
         through: function (event, context, handler, frequency) {
-            addToStorage(this.storage, [event, context, handler, ['t', frequency]])
+            addToStorage(this.storage, [event, context, handler, ['t', frequency]]);
 
             return this;
         }
