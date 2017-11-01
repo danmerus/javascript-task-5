@@ -32,7 +32,7 @@ function helper(storage, actions, q, temp, count) { // eslint-disable-line max-p
         actions[q][1].call(actions[q][0]);
         storage[temp][q][2][1] -= 1;
     }
-    if (extension[0] === 't' && count % extension[1] === 0  ){
+    if (extension[0] === 't' && count % extension[1] === 0) {
         actions[q][1].call(actions[q][0]);
     }
 }
@@ -41,7 +41,7 @@ function performEvent(storage, event, count) { // eslint-disable-line max-statem
     var events = event.split('.');
     var actions = [];
     var temp;
-    for(var p in storage) {
+    for (var p in storage) {
         if (storage.hasOwnProperty(p) && p === event) {
             actions = storage[p];
             temp = p;
@@ -64,7 +64,7 @@ function deleteFromStorage(storage, data) {
     var context = data[1];
     var actions = [];
     var temp;
-    for(var p in storage) {
+    for (var p in storage) {
         if (storage.hasOwnProperty(p) && p === event){
             actions = storage[p];
             temp = p;
@@ -72,7 +72,7 @@ function deleteFromStorage(storage, data) {
     }
     for (var w = 0; w < actions.length; w ++) {
         if (actions[w][0] === context) {
-            actions.splice(w,1);
+            actions.splice(w, 1);
         }
     }
     storage[temp] = actions;
@@ -89,6 +89,7 @@ function getEmitter() {
 
         storage: {},
         count: 0,
+
         /**
          * Подписаться на событие
          * @param {String} event
@@ -98,6 +99,7 @@ function getEmitter() {
          */
         on: function (event, context, handler) {
             addToStorage(this.storage, [event, context, handler]);
+
             return this;
         },
 
@@ -109,6 +111,7 @@ function getEmitter() {
          */
         off: function (event, context) {
             this.storage = deleteFromStorage(this.storage, [event, context]);
+
             return this;
         },
 
@@ -120,6 +123,7 @@ function getEmitter() {
         emit: function (event) {
             this.count += 1;
             performEvent(this.storage, event, this.count);
+            
             return this;
         },
 
@@ -133,7 +137,8 @@ function getEmitter() {
          * @returns {Object}
          */
         several: function (event, context, handler, times) {
-            addToStorage(this.storage, [event, context, handler, ['s',times]]);
+            addToStorage(this.storage, [event, context, handler, ['s', times]]);
+            
             return this;
         },
 
@@ -147,7 +152,8 @@ function getEmitter() {
          * @returns {Object}
          */
         through: function (event, context, handler, frequency) {
-            addToStorage(this.storage, [event, context, handler, ['t',frequency]]);
+            addToStorage(this.storage, [event, context, handler, ['t', frequency]]);
+            
             return this;
         }
     };
