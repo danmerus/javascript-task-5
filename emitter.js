@@ -65,7 +65,7 @@ function deleteFromStorage(storage, data) {
     var actions = [];
     var temp;
     for (var p in storage) {
-        if (storage.hasOwnProperty(p) && p === event){
+        if (storage.hasOwnProperty(p) && p === event) {
             actions = storage[p];
             temp = p;
         }
@@ -123,7 +123,7 @@ function getEmitter() {
         emit: function (event) {
             this.count += 1;
             performEvent(this.storage, event, this.count);
-            
+
             return this;
         },
 
@@ -138,7 +138,7 @@ function getEmitter() {
          */
         several: function (event, context, handler, times) {
             addToStorage(this.storage, [event, context, handler, ['s', times]]);
-            
+
             return this;
         },
 
