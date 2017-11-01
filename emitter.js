@@ -79,7 +79,7 @@ function searchKeys(storage, prefix) {
     var out = [];
     for (var p in storage) {
         if (storage.hasOwnProperty(p) && p.split('.')[0] === prefix) {
-            out.push(p)
+            out.push(p);
         }
     }
 
@@ -90,7 +90,7 @@ function deleteFromStorage(storage, data) { // eslint-disable-line max-statement
     var events = data[0].split('.');
     var context = data[1];
     dele(storage, event, context);
-    if (events.length == 1) {
+    if (events.length === 1) {
         var keys = searchKeys(storage, event);
         for (var u = 0; u < keys.length; u++) {
             dele(storage, keys[u], context);
