@@ -59,9 +59,7 @@ function performEvent(storage, event, count) { // eslint-disable-line max-statem
     }
 }
 
-function deleteFromStorage(storage, data) {
-    var event = data[0];
-    var context = data[1];
+function dele(storage, event, context) {
     var actions = [];
     var temp;
     for (var p in storage) {
@@ -70,12 +68,34 @@ function deleteFromStorage(storage, data) {
             temp = p;
         }
     }
-    for (var w = 0; w < actions.length; w ++) {
+    for (var w = 0; w < actions.length; w++) {
         if (actions[w][0] === context) {
             actions.splice(w, 1);
         }
     }
     storage[temp] = actions;
+}
+function searchKeys(storage, prefix) {
+    var out = [];
+    for (var p in storage) {
+        if (storage.hasOwnProperty(p) && p.split('.')[0] === prefix) {
+            out.push(p)
+        }
+    }
+
+    return out;
+}
+function deleteFromStorage(storage, data) { // eslint-disable-line max-statements, complexity
+    var event = data[0];
+    var events = data[0].split('.');
+    var context = data[1];
+    dele(storage, event, context);
+    if (events.length == 1) {
+        var keys = searchKeys(storage, event);
+        for (var u = 0; u < keys.length; u++) {
+            dele(storage, keys[u], context);
+        }
+    }
 
     return storage;
 }
