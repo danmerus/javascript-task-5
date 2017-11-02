@@ -28,11 +28,11 @@ function addToStorage(storage, data) {
 function helper(storage, actions, q, temp, count) { // eslint-disable-line max-params
     var extension = actions[q][2];
     var times = extension[1];
-    if (extension[0] === 's' && times > 0) {
+    if (extension[0] === 's' && times > 0 && actions[q][1] !== undefined) {
         actions[q][1].call(actions[q][0]);
         storage[temp][q][2][1] -= 1;
     }
-    if (extension[0] === 't' && (count - 1) % extension[1] === 0) {
+    if (extension[0] === 't' && (count - 1) % extension[1] === 0 && actions[q][1] !== undefined) {
         actions[q][1].call(actions[q][0]);
     }
 }
@@ -49,7 +49,7 @@ function performEvent(obj, event) { // eslint-disable-line max-statements, compl
         }
     }
     for (var q = 0; q < actions.length; q++) {
-        if (actions[q].length === 2) {
+        if (actions[q].length === 2 &&  actions[q][1] !== undefined) {
             actions[q][1].call(actions[q][0]);
         } else {
             helper(storage, actions, q, temp, obj[event]);
