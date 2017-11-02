@@ -169,7 +169,11 @@ function getEmitter() {
             if (this[event] === undefined) {
                 this[event] = 0;
             }
-            addToStorage(this.storage, [event, context, handler, ['s', times]]);
+            if (times <= 0) {
+                addToStorage(this.storage, [event, context, handler]);
+            } else if (times > 0) {
+                addToStorage(this.storage, [event, context, handler, ['s', times]]);
+            }
 
             return this;
         },
@@ -187,7 +191,11 @@ function getEmitter() {
             if (this[event] === undefined) {
                 this[event] = 0;
             }
-            addToStorage(this.storage, [event, context, handler, ['t', frequency]]);
+            if (frequency <= 0) {
+                addToStorage(this.storage, [event, context, handler]);
+            } else if (frequency > 0) {
+                addToStorage(this.storage, [event, context, handler, ['t', frequency]]);
+            }
 
             return this;
         }
