@@ -38,7 +38,7 @@ function helper(storage, actions, q, temp, count) { // eslint-disable-line max-p
 }
 
 function performEvent(obj, event) { // eslint-disable-line max-statements, complexity
-    var storage = obj['storage'];
+    var storage = obj.storage;
     var events = event.split('.');
     var actions = [];
     var temp;
