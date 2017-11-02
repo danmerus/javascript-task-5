@@ -4,7 +4,7 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-getEmitter.isStar = false;
+getEmitter.isStar = true;
 module.exports = getEmitter;
 
 function addToStorage(storage, data) {
@@ -66,18 +66,20 @@ function performEvent(obj, event) { // eslint-disable-line max-statements, compl
 function dele(storage, event, context) {
     var actions = [];
     var temp;
+    var tempActions = [];
     for (var p in storage) {
         if (storage.hasOwnProperty(p) && p === event) {
             actions = storage[p];
             temp = p;
         }
     }
+    tempActions = actions;
     for (var w = 0; w < actions.length; w++) {
         if (actions[w][0] === context) {
-            actions.splice(w, 1);
+            tempActions.splice(w, 1);
         }
     }
-    storage[temp] = actions;
+    storage[temp] = tempActions;
 }
 function searchKeys(storage, prefix) {
     var out = [];
@@ -121,6 +123,7 @@ function getEmitter() {
          * @returns {Object}
          */
         on: function (event, context, handler) {
+
             addToStorage(this.storage, [event, context, handler]);
 
             return this;
