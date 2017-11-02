@@ -49,7 +49,7 @@ function performEvent(obj, event) { // eslint-disable-line max-statements, compl
         }
     }
     for (var q = 0; q < actions.length; q++) {
-        if (actions[q].length === 2 &&  actions[q][1] !== undefined) {
+        if (actions[q].length === 2 && actions[q][1] !== undefined) {
             actions[q][1].call(actions[q][0]);
         } else {
             helper(storage, actions, q, temp, obj[event]);
