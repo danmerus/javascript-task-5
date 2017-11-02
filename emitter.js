@@ -25,14 +25,17 @@ function addToStorage(storage, data) {
     storage[event] = [action];
 
 }
-function helper(storage, actions, q, temp, count) { // eslint-disable-line max-params
+function helper(storage, actions, q, temp) { // eslint-disable-line max-params
     var extension = actions[q][2];
     var times = extension[1];
     if (extension[0] === 's' && times > 0 && actions[q][1] !== undefined) {
         actions[q][1].call(actions[q][0]);
         storage[temp][q][2][1] -= 1;
     }
-    if (extension[0] === 't' && (count - 1) % extension[1] === 0 && actions[q][1] !== undefined) {
+    if (extension[0] === 't') {
+        storage[temp][q][2][2] += 1;
+    }
+    if (extension[0] === 't' && (extension[2] - 1) % extension[1] === 0) {
         actions[q][1].call(actions[q][0]);
     }
 }
@@ -52,7 +55,7 @@ function performEvent(obj, event) { // eslint-disable-line max-statements, compl
         if (actions[q].length === 2 && actions[q][1] !== undefined) {
             actions[q][1].call(actions[q][0]);
         } else {
-            helper(storage, actions, q, temp, obj[event]);
+            helper(storage, actions, q, temp);
         }
     }
     if (events.length > 1) {
@@ -194,7 +197,7 @@ function getEmitter() {
             if (frequency <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (frequency > 0) {
-                addToStorage(this.storage, [event, context, handler, ['t', frequency]]);
+                addToStorage(this.storage, [event, context, handler, ['t', frequency, 0]]);
             }
 
             return this;
