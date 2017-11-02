@@ -32,12 +32,13 @@ function helper(storage, actions, q, temp, count) { // eslint-disable-line max-p
         actions[q][1].call(actions[q][0]);
         storage[temp][q][2][1] -= 1;
     }
-    if (extension[0] === 't' && count % extension[1] === 0) {
+    if (extension[0] === 't' && (count - 1) % extension[1] === 0) {
         actions[q][1].call(actions[q][0]);
     }
 }
 
-function performEvent(storage, event, count) { // eslint-disable-line max-statements, complexity
+function performEvent(obj, event) { // eslint-disable-line max-statements, complexity
+    var storage = obj['storage'];
     var events = event.split('.');
     var actions = [];
     var temp;
@@ -51,11 +52,11 @@ function performEvent(storage, event, count) { // eslint-disable-line max-statem
         if (actions[q].length === 2) {
             actions[q][1].call(actions[q][0]);
         } else {
-            helper(storage, actions, q, temp, count);
+            helper(storage, actions, q, temp, obj[event]);
         }
     }
     if (events.length > 1) {
-        performEvent(storage, events[0], count);
+        performEvent(obj, events[0]);
     }
 }
 
@@ -108,7 +109,6 @@ function getEmitter() {
     return {
 
         storage: {},
-        count: 0,
 
         /**
          * Подписаться на событие
@@ -118,6 +118,9 @@ function getEmitter() {
          * @returns {Object}
          */
         on: function (event, context, handler) {
+            if (this[event] === undefined) {
+                this[event] = 0;
+            }
             addToStorage(this.storage, [event, context, handler]);
 
             return this;
@@ -141,8 +144,14 @@ function getEmitter() {
          * @returns {Object}
          */
         emit: function (event) {
-            this.count += 1;
-            performEvent(this.storage, event, this.count);
+            this[event]++;
+            var events = event.split('.');
+            if (events.length === 2 && this[events[0]] === undefined) {
+                this[events[0]] = 1;
+            } else if (events.length === 2) {
+                this[events[0]]++;
+            }
+            performEvent(this, event);
 
             return this;
         },
@@ -157,6 +166,9 @@ function getEmitter() {
          * @returns {Object}
          */
         several: function (event, context, handler, times) {
+            if (this[event] === undefined) {
+                this[event] = 0;
+            }
             addToStorage(this.storage, [event, context, handler, ['s', times]]);
 
             return this;
@@ -172,6 +184,9 @@ function getEmitter() {
          * @returns {Object}
          */
         through: function (event, context, handler, frequency) {
+            if (this[event] === undefined) {
+                this[event] = 0;
+            }
             addToStorage(this.storage, [event, context, handler, ['t', frequency]]);
 
             return this;
