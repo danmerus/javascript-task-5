@@ -4,7 +4,7 @@
  * Сделано задание на звездочку
  * Реализованы методы several и through
  */
-getEmitter.isStar = true;
+getEmitter.isStar = false;
 module.exports = getEmitter;
 
 function addToStorage(storage, data) {
@@ -121,9 +121,6 @@ function getEmitter() {
          * @returns {Object}
          */
         on: function (event, context, handler) {
-            if (this[event] === undefined) {
-                this[event] = 0;
-            }
             addToStorage(this.storage, [event, context, handler]);
 
             return this;
@@ -147,7 +144,6 @@ function getEmitter() {
          * @returns {Object}
          */
         emit: function (event) {
-            this[event]++;
             var events = event.split('.');
             if (events.length === 2 && this[events[0]] === undefined) {
                 this[events[0]] = 1;
@@ -169,9 +165,6 @@ function getEmitter() {
          * @returns {Object}
          */
         several: function (event, context, handler, times) {
-            if (this[event] === undefined) {
-                this[event] = 0;
-            }
             if (times <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (times > 0) {
@@ -191,9 +184,6 @@ function getEmitter() {
          * @returns {Object}
          */
         through: function (event, context, handler, frequency) {
-            if (this[event] === undefined) {
-                this[event] = 0;
-            }
             if (frequency <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (frequency > 0) {
