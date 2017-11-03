@@ -59,7 +59,9 @@ function performEvent(obj, event) { // eslint-disable-line max-statements, compl
         }
     }
     if (events.length > 1) {
-        performEvent(obj, events[0]);
+        events.pop();
+        events = events.join('.');
+        performEvent(obj, events);
     }
 }
 
@@ -84,7 +86,6 @@ function dele(storage, event, context) {
 
 function deleteFromStorage(storage, data) { // eslint-disable-line max-statements, complexity
     var event = data[0];
-    var events = data[0].split('.');
     var context = data[1];
     dele(storage, event, context);
     for (var k in storage) {
