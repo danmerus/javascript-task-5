@@ -151,7 +151,7 @@ function getEmitter() {
             if (times <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (times > 0) {
-                let extension = {marker: 's', freq: times};
+                let extension = { marker: 's', freq: times };
                 addToStorage(this.storage, [event, context, handler, extension]);
             }
 
@@ -171,7 +171,7 @@ function getEmitter() {
             if (frequency <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (frequency > 0) {
-                let extension = {marker: 't', freq: frequency, current: 0 };
+                let extension = { marker: 't', freq: frequency, current: 0 };
                 addToStorage(this.storage, [event, context, handler, extension]);
             }
 
