@@ -8,10 +8,10 @@ getEmitter.isStar = true;
 module.exports = getEmitter;
 
 function addToStorage(storage, data) {
-    let [event, action] = [data[0],[...data]];
-    action.shift(); //возможно тут не совсем то
+    let [event, action] = [data[0], [...data]];
+    action.shift(); // возможно тут не совсем то
     storage[event] = storage[event] || [];
-    storage[event].push(action); //сразу так мало кода!
+    storage[event].push(action); // сразу так мало кода!
 
 }
 function helper(storage, actions, q, temp) { // eslint-disable-line max-params
