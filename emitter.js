@@ -7,7 +7,7 @@
 getEmitter.isStar = true;
 module.exports = getEmitter;
 
-function addToStorage(storage, data) {
+function addToStorage(storage, data) { // заменил var на let, не знаю насколько это корректно
     let [event, action] = [data[0], [...data]];
     action.shift(); // возможно тут не совсем то
     storage[event] = storage[event] || [];
@@ -57,32 +57,32 @@ function performEvent(obj, event) { // eslint-disable-line max-statements, compl
     }
 }
 
-function dele(storage, event, context) {
-    var actions = [];
-    var temp;
-    var tempActions = [];
-    for (var p in storage) {
-        if (storage.hasOwnProperty(p) && p === event) {
-            actions = storage[p];
-            temp = p;
+function deleteEntry(storage, event, context) {
+    let actions = [];
+    let currentStorageEntry;
+    let tempActions;
+    for (let property in storage) {
+        if (storage.hasOwnProperty(property) && property === event) {
+            actions = storage[property];
+            currentStorageEntry = property;
         }
     }
     tempActions = actions;
-    for (var w = 0; w < actions.length; w++) {
+    for (let w = 0; w < actions.length; w++) {
         if (actions[w][0] === context) {
             tempActions.splice(w, 1);
         }
     }
-    storage[temp] = tempActions;
+    storage[currentStorageEntry] = tempActions;
 }
 
 function deleteFromStorage(storage, data) { // eslint-disable-line max-statements, complexity
-    var event = data[0];
-    var context = data[1];
-    dele(storage, event, context);
-    for (var k in storage) {
+    let event = data[0];
+    let context = data[1];
+    deleteEntry(storage, event, context);
+    for (let k in storage) {
         if (storage.hasOwnProperty(k) && k.startsWith(event + '.')) {
-            dele(storage, k, context);
+            deleteEntry(storage, k, context);
         }
     }
 
@@ -130,7 +130,7 @@ function getEmitter() {
          * @returns {Object}
          */
         emit: function (event) {
-            var events = event.split('.');
+            let events = event.split('.');
             if (events.length === 2 && this[events[0]] === undefined) {
                 this[events[0]] = 1;
             } else if (events.length === 2) {
@@ -173,7 +173,8 @@ function getEmitter() {
             if (frequency <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (frequency > 0) {
-                addToStorage(this.storage, [event, context, handler, ['t', frequency, 0]]);
+                let extension = ['t', frequency, 0]; // маркер, частота, текущее кол-во вызовов
+                addToStorage(this.storage, [event, context, handler, extension]);
             }
 
             return this;
