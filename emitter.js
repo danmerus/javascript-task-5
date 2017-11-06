@@ -8,26 +8,24 @@ getEmitter.isStar = true;
 module.exports = getEmitter;
 
 function addToStorage(storage, data) { // заменил var на let, не знаю насколько это корректно
-    let [event, action] = [data[0], [...data]];
-    action.shift(); // возможно тут не совсем то
+    let [event, ...action] = data;
     storage[event] = storage[event] || [];
     storage[event].push(action); // сразу так мало кода!
 
 }
 function advancedEventHandler(storage, actions, actionRecord) { // eslint-disable-line max-params
     let extension = actions[actionRecord][2];
-    let times = extension[1];
     let functionToHandle = actions[actionRecord][1];
     let context = actions[actionRecord][0];
     let storageRecord = storage[actionRecord];
-    if (extension[0] === 's' && times > 0 && functionToHandle !== undefined) {
+    if (extension.marker === 's' && extension.freq > 0 && functionToHandle !== undefined) {
         functionToHandle.call(context);
-        storageRecord[2][1] -= 1;
+        storageRecord[2].freq -= 1;
     }
-    if (extension[0] === 't') {
-        storageRecord[2][2] += 1;
+    if (extension.marker === 't') {
+        storageRecord[2].current += 1;
     }
-    if (extension[0] === 't' && (extension[2] - 1) % extension[1] === 0) {
+    if (extension.marker === 't' && (extension.current - 1) % extension.freq === 0) {
         functionToHandle.call(context);
     }
 }
@@ -77,8 +75,7 @@ function deleteEntry(storage, event, context) {
 }
 
 function deleteFromStorage(storage, data) { // eslint-disable-line max-statements, complexity
-    let event = data[0];
-    let context = data[1];
+    let [event, context] = data;
     deleteEntry(storage, event, context);
     for (let k in storage) {
         if (storage.hasOwnProperty(k) && k.startsWith(event + '.')) {
@@ -154,7 +151,8 @@ function getEmitter() {
             if (times <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (times > 0) {
-                addToStorage(this.storage, [event, context, handler, ['s', times]]);
+                let extension = {marker: 's', freq: times};
+                addToStorage(this.storage, [event, context, handler, extension]);
             }
 
             return this;
@@ -173,7 +171,7 @@ function getEmitter() {
             if (frequency <= 0) {
                 addToStorage(this.storage, [event, context, handler]);
             } else if (frequency > 0) {
-                let extension = ['t', frequency, 0]; // маркер, частота, текущее кол-во вызовов
+                let extension = {marker: 't', freq: frequency, current: 0 };
                 addToStorage(this.storage, [event, context, handler, extension]);
             }
 
