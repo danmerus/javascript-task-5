@@ -14,37 +14,40 @@ function addToStorage(storage, data) {
     storage[event].push(action); // сразу так мало кода!
 
 }
-function helper(storage, actions, q, temp) { // eslint-disable-line max-params
-    var extension = actions[q][2];
-    var times = extension[1];
-    if (extension[0] === 's' && times > 0 && actions[q][1] !== undefined) {
-        actions[q][1].call(actions[q][0]);
-        storage[temp][q][2][1] -= 1;
+function advancedEventHandler(storage, actions, actionRecord) { // eslint-disable-line max-params
+    let extension = actions[actionRecord][2];
+    let times = extension[1];
+    let functionToHandle = actions[actionRecord][1];
+    let context = actions[actionRecord][0];
+    let storageRecord = storage[actionRecord];
+    if (extension[0] === 's' && times > 0 && functionToHandle !== undefined) {
+        functionToHandle.call(context);
+        storageRecord[2][1] -= 1;
     }
     if (extension[0] === 't') {
-        storage[temp][q][2][2] += 1;
+        storageRecord[2][2] += 1;
     }
     if (extension[0] === 't' && (extension[2] - 1) % extension[1] === 0) {
-        actions[q][1].call(actions[q][0]);
+        functionToHandle.call(context);
     }
 }
 
 function performEvent(obj, event) { // eslint-disable-line max-statements, complexity
-    var storage = obj.storage;
-    var events = event.split('.');
-    var actions = [];
-    var temp;
-    for (var p in storage) {
+    let storage = obj.storage;
+    let events = event.split('.');
+    let actions = [];
+    let currentStorageEntry;
+    for (let p in storage) {
         if (storage.hasOwnProperty(p) && p === event) {
             actions = storage[p];
-            temp = p;
+            currentStorageEntry = p;
         }
     }
-    for (var q = 0; q < actions.length; q++) {
-        if (actions[q].length === 2 && actions[q][1] !== undefined) {
-            actions[q][1].call(actions[q][0]);
+    for (let actionRecord = 0; actionRecord < actions.length; actionRecord++) {
+        if (actions[actionRecord].length === 2 && actions[actionRecord][1] !== undefined) {
+            actions[actionRecord][1].call(actions[actionRecord][0]);
         } else {
-            helper(storage, actions, q, temp);
+            advancedEventHandler(storage[currentStorageEntry], actions, actionRecord);
         }
     }
     if (events.length > 1) {
